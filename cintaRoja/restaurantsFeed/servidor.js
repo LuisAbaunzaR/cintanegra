@@ -243,6 +243,7 @@ app.delete('/api/user/:id/',(request, response)=>{
 app.post('/api/comment/',(request, response)=>{
     let jsonComment = request.body
 
+
     const nuevoComment = Comentario(jsonComment) 
         nuevoComment
         .save((error,comentario)=>{
@@ -253,8 +254,10 @@ app.post('/api/comment/',(request, response)=>{
                 "body": comentario,
                 "error": error
             })
+            
         })
 })
+
 // GET ALL COMMENT-> 
 app.get('/api/comment/',(request, response)=>{
     
@@ -273,11 +276,171 @@ app.get('/api/comment/',(request, response)=>{
 })
 
 
+// ----- INSERTANDO VALORACION ------
+// app.get('/api/feed/:id/:valor/',(request, response)=>{
+  
+//     //console.log('Comienza el callback');
+    
+//      const restId = request.params.id
+//      const restVal = request.params.valor
+
+//      let likes, ok, dislikes;
+ 
+//      //console.log("Comienza la petición");
+//     // let traer = new Promise(function(resolve,reject){
+
+//     // })
+//     //  console.log("Este es el json" + jsonComment)
+
+//      Restaurant
+//          .findById(restId)
+//          .exec()
+//          .then(restaurant=>{
+             
+//              if (restVal ==1){
+//                 likes = restaurant.likes +1
+//                 ok=restaurant.ok
+//                 dislikes=restaurant.dislikes
+//                 //console.log(likes)
+//              }else if(restVal ==2){
+//                 likes = restaurant.likes 
+//                 ok=restaurant.ok +1
+//                 dislikes=restaurant.dislikes
+//              }else if(restVal ==3){
+//                 likes = restaurant.likes 
+//                 ok=restaurant.ok
+//                 dislikes=restaurant.dislikes+1
+//              }else{
+//                 likes = restaurant.likes 
+//                 ok=restaurant.ok 
+//                 dislikes=restaurant.dislikes
+//              }
+             
+//             Restaurant
+//                 .findByIdAndUpdate(restaurant._id,
+//                     {
+//                         likes: likes,
+//                         ok: ok,
+//                         dislikes: dislikes
+//                     },
+//                     {new:true})
+//                     // .populate('articulos')
+//                     .exec()
+//                     .then(restaurant=>{
+                        
+                        
+                        
+                        
+//                         response.status(200)
+//                         .send(restaurant)
+
+//                     })
+//                     .catch( error => response.status(404).send(error));
+//             })
+               
+//          })
+    
+// SEARCH RESTAURANT
+app.get("/api/search/:categoria/", (request, response) => {
+    const categoriaSearch = request.params.categoria;
+    var query = { categoria: categoriaSearch };
+    Restaurant
+      .find(query)
+      .exec()
+      .then(restaurante => {
+        response.status(200).send(restaurante);
+      })
+      .catch(error => {
+        response.status(404).send(error);
+      });
+  
+  });
+         
+////iniciando desmadre
+
+app.post('/api/feed/:id/:valor/',(request, response)=>{
+  
+    //console.log('Comienza el callback');
+    let jsonComment = request.body
+     const restId = request.params.id
+     const restVal = request.params.valor
+
+
+     let likes, ok, dislikes;
+ 
+     //console.log("Comienza la petición");
+    // let traer = new Promise(function(resolve,reject){
+
+    // })
+    //  console.log("Este es el json" + jsonComment)
+
+     Restaurant
+         .findById(restId)
+         .exec()
+         .then(restaurant=>{
+            // console.log(restaurant)
+             if (restVal ==1){
+                likes = restaurant.likes +1
+                ok=restaurant.ok
+                dislikes=restaurant.dislikes
+                //console.log(likes)
+             }else if(restVal ==2){
+                likes = restaurant.likes 
+                ok=restaurant.ok +1
+                dislikes=restaurant.dislikes
+             }else if(restVal ==3){
+                likes = restaurant.likes 
+                ok=restaurant.ok
+                dislikes=restaurant.dislikes+1
+             }else{
+                likes = restaurant.likes 
+                ok=restaurant.ok 
+                dislikes=restaurant.dislikes
+             }
+             
+            Restaurant
+                .findByIdAndUpdate(restaurant._id,
+                    {
+                        likes: likes,
+                        ok: ok,
+                        dislikes: dislikes
+                    },
+                    {new:true})
+                    // .populate('articulos')
+                    .exec()
+                    .then(restaurant=>{
+                        jsonComment.restaurant=restaurant._id
+                        const nuevoComment = Comentario(jsonComment) 
+                        nuevoComment
+                        .save((error,comentario)=>{
+                            response
+                            .status(201)
+                            .send({
+                                "mensaje": `Comentario creado exitosamente con el ID ${comentario.id}`,
+                                "body": comentario,
+                                "error": error
+                            })
+                        
+                        
+                      //  response.status(200)
+                        // .send(restaurant)
+
+                    })
+                  //  .catch( error => response.status(404).send(error));
+            })
+               
+         }).catch( error => response.status(404).send(error));
+        })
+
+  
+
+
+
 
 .listen(process.env.PORT || 5000);
 
 
-// //usar en local host
+//usar en local host
 // var PORT = process.env.port || 8801;
 //  app.listen(PORT,()=>{
 //     console.log(`Servidor Corriendo en el puerto ${PORT}`)

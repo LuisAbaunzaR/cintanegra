@@ -34,6 +34,7 @@ const comentarioSchema = Schema({
     user:{type:ObjectId, ref:'User', required:true},
     restaurant: {type:ObjectId, ref:'Restaurant', required:true},
     comentario:{type: String, require: true},
+    
 
 });
 
