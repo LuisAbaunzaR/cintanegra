@@ -432,7 +432,24 @@ app.post('/api/feed/:id/:valor/',(request, response)=>{
          }).catch( error => response.status(404).send(error));
         })
 
-  
+  // GET  COMMENT restaurant-> 
+app.get('/api/busqueda/:restaurante/',(request, response)=>{
+    const commentSearch = request.params.restaurante;
+    var query = { restaurant: commentSearch };
+    Comentario
+        .find(query)
+        .exec()
+        .then(jsonResultadoComment=>{
+            response.status(200)
+                .send({
+                    "mensaje":"Listado de Commentarios",
+                    "body":{jsonResultadoComment},
+                })
+                
+        })
+        .catch(error=> console.log(error))
+})
+
 
 
 
